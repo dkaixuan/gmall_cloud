@@ -1,6 +1,11 @@
 package com.atguigu.gmall.pms.service.impl;
 
+import com.atguigu.gmall.pms.dao.AttrAttrgroupRelationDao;
+import com.atguigu.gmall.pms.entity.AttrAttrgroupRelationEntity;
+import com.atguigu.gmall.pms.vo.AttrGroupVo;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,6 +22,10 @@ import com.atguigu.gmall.pms.service.AttrService;
 
 @Service("attrService")
 public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements AttrService {
+
+
+    @Autowired
+    private AttrAttrgroupRelationDao attrAttrgroupRelationDao;
 
     @Override
     public PageVo queryPage(QueryCondition params) {
@@ -43,4 +52,18 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         return new PageVo(page);
     }
 
-}
+    @Override
+    public void saveAttrAndGroupRelation(AttrGroupVo attrGroupVo) {
+        attrGroupVo.setAttrId(null);
+        baseMapper.insert(attrGroupVo);
+        Long attrId = attrGroupVo.getAttrId();
+
+        AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+        relationEntity.setAttrId(attrId);
+        relationEntity.setAttrGroupId(attrGroupVo.getAttrGroupId());
+        attrAttrgroupRelationDao.insert(relationEntity);
+    }
+
+
+
+    }

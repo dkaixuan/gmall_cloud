@@ -1,6 +1,6 @@
 spring:
   application:
-    name: gmall_sms
+    name: gmall-sms
   cloud:
     nacos:
       config:

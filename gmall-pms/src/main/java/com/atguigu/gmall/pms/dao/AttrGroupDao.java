@@ -20,4 +20,6 @@ public interface AttrGroupDao extends BaseMapper<AttrGroupEntity> {
 
    GroupVo getGroupVo(@Param("gid") Long gid);
 
+    List<GroupVo> listGroupVoByCatalogId(@Param("catId") Long catId);
+
 }

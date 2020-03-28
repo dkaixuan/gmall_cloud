@@ -35,8 +35,24 @@
         </collection>
     </resultMap>
 
+    <resultMap id="extendBaseMapByCatalogId" type="com.atguigu.gmall.pms.vo.GroupVo" extends="attrGroupMap">
+        <collection property="attrEntities" javaType="com.atguigu.gmall.pms.entity.AttrEntity">
+            <id property="attrId" column="attr_id"></id>
+            <result property="attrName" column="attr_name"></result>
+            <result property="searchType" column="search_type"></result>
+            <result property="valueType" column="value_type"></result>
+            <result property="icon" column="attr_icon"></result>
+            <result property="valueSelect" column="value_select"></result>
+            <result property="attrType" column="attr_type"></result>
+            <result property="enable" column="enable"></result>
+            <result property="catelogId" column="attr_catelog_id"></result>
+            <result property="showDesc" column="show_desc"></result>
+        </collection>
+    </resultMap>
 
-    <select id="getGroupVo" resultMap="extendBaseMap">
+
+
+    <select id="getGroupVo" resultMap="extendBaseMapByCatalogId">
 SELECT
 	g.*,
 	a.attr_id,a.attr_name,a.search_type,a.value_type,a.icon as attr_icon,a.value_select,a.attr_type,a.enable,a.catelog_id,a.show_desc,
@@ -47,6 +63,19 @@ FROM
 	JOIN pms_attr a ON gr.attr_id = a.attr_id
 WHERE
 	g.attr_group_id =#{gid}
+    </select>
+
+
+    <select id="listGroupVoByCatalogId" resultMap="extendBaseMap">
+SELECT
+	g.*,
+	a.attr_id,a.attr_name,a.search_type,a.value_type,a.icon as attr_icon,a.value_select,a.attr_type,a.enable,a.catelog_id as attr_catelog_id,a.show_desc
+FROM
+	pms_attr_group g
+	JOIN pms_attr_attrgroup_relation gr ON g.attr_group_id = gr.attr_group_id
+	JOIN pms_attr a ON gr.attr_id = a.attr_id
+WHERE
+	g.catelog_id =#{catId}
     </select>
 
 
