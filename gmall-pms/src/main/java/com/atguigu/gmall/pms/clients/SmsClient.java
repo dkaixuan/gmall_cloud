@@ -1,4 +1,4 @@
-package com.atguigu.gmall.pms.clents;
+package com.atguigu.gmall.pms.clients;
 
 import com.atguigu.core.bean.Resp;
 import com.atguigu.gmall.pms.vo.SkuSaleVo;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @version 1.0
  * @date 28/3/2020 下午8:01
  */
-@FeignClient("gmall-sms")
+@FeignClient(value = "gmall-sms")
 public interface SmsClient {
 
     @PostMapping("sms/skubounds/sku/sale/save")
