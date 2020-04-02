@@ -1,6 +1,7 @@
 package com.atguigu.gmall.pms.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import com.atguigu.gmall.pms.entity.ProductAttrValueEntity;
 import com.atguigu.gmall.pms.service.ProductAttrValueService;
 
-
+import javax.ws.rs.GET;
 
 
 /**
@@ -32,6 +33,13 @@ import com.atguigu.gmall.pms.service.ProductAttrValueService;
 public class ProductAttrValueController {
     @Autowired
     private ProductAttrValueService productAttrValueService;
+
+    @GetMapping("{spuId}")
+    public Resp<List<ProductAttrValueEntity>> querySearchAttrValueBySpuId(@PathVariable("spuId") Long spuId) {
+        List<ProductAttrValueEntity> searchValues=productAttrValueService.querySearchAttrValueBySpuId(spuId);
+        return Resp.ok(searchValues);
+    }
+
 
     /**
      * 列表

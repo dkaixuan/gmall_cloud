@@ -15,4 +15,11 @@
     </resultMap>
 
 
+    <select id="querySearchAttrValueBySpuId" resultType="com.atguigu.gmall.pms.entity.ProductAttrValueEntity">
+        select a.*
+        from pms_product_attr_value a join pms_attr b on a.attr_id=b.id
+        where b.search_type=1 and a.spu_id=#{spuId}
+    </select>
+
+
 </mapper>

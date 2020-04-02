@@ -1,0 +1,16 @@
+server:
+  port: 8086
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  rabbitmq:
+    host: 192.168.0.107
+    port: 5672
+    virtual-host: /
+    username: guest
+    password: guest
+  elasticsearch:
+    rest:
+      uris: http://192.168.3.107:9300

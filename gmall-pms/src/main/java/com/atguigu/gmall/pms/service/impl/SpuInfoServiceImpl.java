@@ -13,6 +13,7 @@ import com.atguigu.gmall.pms.vo.SkuInfoVo;
 import com.atguigu.gmall.pms.vo.SkuSaleVo;
 import com.atguigu.gmall.pms.vo.SpuInfoVo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,15 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Autowired
     private SmsClient smsClient;
     @Autowired
+    private AmqpTemplate amqpTemplate;
+
+
+    private static final String EXCHANGENAME="GMALL_PMS_EXCHANGE";
+    private static final String ROUTINGKEY="item.";
+
+
+
+
     @Override
     public PageVo queryPage(QueryCondition params) {
         IPage<SpuInfoEntity> page = this.page(
@@ -93,7 +103,14 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         spuInfoService.savePmsSpuProductAttrValue(spuInfoVo);
         //保存sku相关的三张表
         spuInfoService.saveSkus(spuInfoVo, spuId);
+        sendMessage("insert", spuId);
+
     }
+
+    private void sendMessage(String type, Long spuId) {
+        amqpTemplate.convertAndSend(EXCHANGENAME, ROUTINGKEY + type, spuId);
+    }
+
 
 
     /**
@@ -151,7 +168,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
      * @return
      */
     @Transactional(rollbackFor = Exception.class,propagation =Propagation.REQUIRES_NEW)
-    private Long saveSpuInfo(SpuInfoVo spuInfoVo) {
+    Long saveSpuInfo(SpuInfoVo spuInfoVo) {
         this.save(spuInfoVo);
         return spuInfoVo.getId();
     }
