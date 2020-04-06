@@ -1,0 +1,20 @@
+server:
+  port: 8091
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  redis:
+    host: 114.55.36.227
+  rabbitmq:
+    host: 114.55.36.227
+    port: 5672
+    virtual-host: /
+    username: guest
+    password: guest
+
+gmall:
+  jwt:
+    pubKeyPath: C:\\Users\\kaixuan\\Desktop\\gmall_cloud\\rsa\\rsa.pub # 公钥地址
+    cookieName: GMALL_TOKEN

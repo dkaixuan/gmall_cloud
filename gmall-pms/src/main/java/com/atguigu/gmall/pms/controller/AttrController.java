@@ -1,24 +1,20 @@
 package com.atguigu.gmall.pms.controller;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.core.bean.Resp;
+import com.atguigu.gmall.pms.entity.AttrEntity;
+import com.atguigu.gmall.pms.entity.ItemGroupVo;
+import com.atguigu.gmall.pms.service.AttrService;
 import com.atguigu.gmall.pms.vo.AttrGroupVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import com.atguigu.gmall.pms.entity.AttrEntity;
-import com.atguigu.gmall.pms.service.AttrService;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -36,9 +32,11 @@ public class AttrController {
     private AttrService attrService;
 
 
+
+
+
     @GetMapping
-    public Resp<PageVo> listAttrByCidAndType(QueryCondition queryCondition, @RequestParam("cid") Long cid,
-                                             @RequestParam(value = "type", defaultValue = "1") Integer type) {
+    public Resp<PageVo> listAttrByCidAndType(QueryCondition queryCondition, @RequestParam("cid") Long cid, @RequestParam(value = "type", defaultValue = "1") Integer type) {
         PageVo pageVo = attrService.listAttrByCidAndType(queryCondition, cid, type);
         return Resp.ok(pageVo);
     }

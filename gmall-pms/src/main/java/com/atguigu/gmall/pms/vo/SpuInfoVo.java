@@ -1,7 +1,6 @@
 package com.atguigu.gmall.pms.vo;
 
-import com.atguigu.gmall.pms.entity.SkuImagesEntity;
-import com.atguigu.gmall.pms.entity.SkuInfoEntity;
+
 import com.atguigu.gmall.pms.entity.SpuInfoEntity;
 import lombok.Data;
 

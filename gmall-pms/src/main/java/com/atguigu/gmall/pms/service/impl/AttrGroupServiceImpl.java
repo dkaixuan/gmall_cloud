@@ -1,31 +1,25 @@
 package com.atguigu.gmall.pms.service.impl;
 
-import com.atguigu.gmall.pms.dao.AttrAttrgroupRelationDao;
-import com.atguigu.gmall.pms.dao.AttrDao;
-import com.atguigu.gmall.pms.entity.AttrAttrgroupRelationEntity;
-import com.atguigu.gmall.pms.entity.AttrEntity;
-import com.atguigu.gmall.pms.vo.GroupVo;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.Query;
 import com.atguigu.core.bean.QueryCondition;
-
+import com.atguigu.gmall.pms.dao.ProductAttrValueDao;
+import com.atguigu.gmall.pms.entity.*;
+import com.atguigu.gmall.pms.dao.AttrAttrgroupRelationDao;
+import com.atguigu.gmall.pms.dao.AttrDao;
 import com.atguigu.gmall.pms.dao.AttrGroupDao;
-import com.atguigu.gmall.pms.entity.AttrGroupEntity;
 import com.atguigu.gmall.pms.service.AttrGroupService;
+import com.atguigu.gmall.pms.vo.GroupVo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service("attrGroupService")
@@ -39,6 +33,9 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Autowired
     private AttrDao attrDao;
+
+    @Autowired
+    private ProductAttrValueDao attrValueDao;
 
 
     @Override
@@ -120,6 +117,22 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 //            this.getGroupVoByMethod2(attrGroupEntity.getAttrGroupId())).collect(Collectors.toList());
 
         return  attrGroupDao.listGroupVoByCatalogId(catId);
+    }
+
+    @Override
+    public List<ItemGroupVo> queryItemGroupVoByCidAndSpuId(Long cid, Long spuId) {
+        List<AttrGroupEntity> attrGroupEntities = this.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", cid));
+        return attrGroupEntities.stream().map(group -> {
+            ItemGroupVo itemGroupVo = new ItemGroupVo();
+            itemGroupVo.setName(group.getAttrGroupName());
+            List<AttrAttrgroupRelationEntity> relationEntities = attrAttrgroupRelationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_group_id", group.getAttrGroupId()));
+            List<Long> attr_ids = relationEntities.stream().map(AttrAttrgroupRelationEntity::getAttrId)
+                    .collect(Collectors.toList());
+            List<ProductAttrValueEntity> productAttrValueEntities = attrValueDao.selectList(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id", spuId).in("attr_id", attr_ids));
+            itemGroupVo.setBaseAttrs(productAttrValueEntities);
+            return itemGroupVo;
+        }).collect(Collectors.toList());
+
     }
 
 }

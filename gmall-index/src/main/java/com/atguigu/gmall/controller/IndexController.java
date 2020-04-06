@@ -1,8 +1,8 @@
 package com.atguigu.gmall.controller;
 
 import com.atguigu.core.bean.Resp;
-import com.atguigu.gmall.pms.api.entity.CategoryEntity;
-import com.atguigu.gmall.pms.api.entity.SkuInfoEntity;
+import com.atguigu.gmall.pms.entity.CategoryEntity;
+import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import com.atguigu.gmall.service.IndexService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

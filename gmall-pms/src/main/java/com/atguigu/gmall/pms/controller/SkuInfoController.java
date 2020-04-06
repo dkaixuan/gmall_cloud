@@ -1,22 +1,20 @@
 package com.atguigu.gmall.pms.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.core.bean.Resp;
+import com.atguigu.gmall.pms.entity.SkuInfoEntity;
+import com.atguigu.gmall.pms.service.SkuInfoService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.atguigu.gmall.pms.entity.SkuInfoEntity;
-import com.atguigu.gmall.pms.service.SkuInfoService;
+import java.util.Arrays;
+import java.util.List;
 
 
 
@@ -34,6 +32,12 @@ import com.atguigu.gmall.pms.service.SkuInfoService;
 public class SkuInfoController {
     @Autowired
     private SkuInfoService skuInfoService;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+
+    private static final String EXCHANGENAME="GMALL_PMS_EXCHANGE";
+    private static final String ROUTINGKEY="item.";
 
 
     @GetMapping("{spuId}")
@@ -88,6 +92,8 @@ public class SkuInfoController {
     @PreAuthorize("hasAuthority('pms:skuinfo:update')")
     public Resp<Object> update(@RequestBody SkuInfoEntity skuInfo){
 		skuInfoService.updateById(skuInfo);
+
+        amqpTemplate.convertAndSend(EXCHANGENAME, ROUTINGKEY+"update", skuInfo.getSkuId());
 
         return Resp.ok(null);
     }
