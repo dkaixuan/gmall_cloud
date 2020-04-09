@@ -1,7 +1,7 @@
 package com.atguigu.gmall.service;
 import com.atguigu.core.bean.Resp;
 import com.atguigu.gmall.annoatation.GmallCache;
-import com.atguigu.gmall.feign.GmallPmsClient;
+import com.atguigu.gmall.order.feign.GmallPmsClient;
 import com.atguigu.gmall.pms.entity.CategoryEntity;
 import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import org.springframework.beans.factory.annotation.Autowired;

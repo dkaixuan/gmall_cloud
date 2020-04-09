@@ -1,4 +1,3 @@
-package com.atguigu.gmall.cart.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.core.bean.Resp;
@@ -7,7 +6,7 @@ import com.atguigu.gmall.cart.feign.GmallSmsClient;
 import com.atguigu.gmall.cart.feign.GmallWmsClient;
 import com.atguigu.gmall.cart.interceptor.AuthInterceptor;
 import com.atguigu.gmall.cart.pojo.Cart;
-import com.atguigu.gmall.cart.pojo.UserInfo;
+import com.atguigu.core.bean.UserInfo;
 import com.atguigu.gmall.cart.service.CartService;
 import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import com.atguigu.gmall.pms.entity.SkuSaleAttrValueEntity;
@@ -177,6 +176,17 @@ public class CartServiceImpl implements CartService {
             hashOperations.delete(skuId.toString());
 
         }
+    }
+
+    @Override
+    public List<Cart> queryCartsByUserId(Long userId) {
+        BoundHashOperations<String, Object, Object> hashOperations = stringRedisTemplate.boundHashOps(KEY_PREFIX + userId);
+        List<Object> cartJsonList = hashOperations.values();
+        List<Cart> cartList = cartJsonList.stream()
+                .map(cartJson -> JSON.parseObject(cartJson.toString(), Cart.class))
+                .filter(Cart::getCheck)
+                .collect(Collectors.toList());
+        return cartList;
     }
 
 

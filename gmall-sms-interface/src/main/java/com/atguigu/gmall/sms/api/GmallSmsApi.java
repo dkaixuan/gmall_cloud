@@ -15,4 +15,6 @@ import java.util.List;
 public interface GmallSmsApi {
     @GetMapping("sms/skubounds/{skuId}")
      Resp<List<SaleVo>> querySkuSalesBySkuId(@PathVariable("skuId") Long skuId);
+
+
 }

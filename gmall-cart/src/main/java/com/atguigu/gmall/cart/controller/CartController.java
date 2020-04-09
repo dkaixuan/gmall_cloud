@@ -30,9 +30,7 @@ public class CartController {
 
     @PostMapping("update")
     public Resp<Object> updateCart(@RequestBody Cart cart) {
-
         cartService.updateCart(cart);
-
         return Resp.ok(null);
     }
 
@@ -41,6 +39,13 @@ public class CartController {
         cartService.deleteCartBySkuId(skuId);
 
         return Resp.ok(null);
+    }
+
+
+    @GetMapping("userCarts/{userId}")
+    public Resp<List<Cart>> queryCartsByUserId(@PathVariable("userId") Long userId) {
+        List<Cart> carts = this.cartService.queryCartsByUserId(userId);
+        return Resp.ok(carts);
     }
 
 

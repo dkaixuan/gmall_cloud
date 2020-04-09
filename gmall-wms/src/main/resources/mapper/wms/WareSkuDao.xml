@@ -12,6 +12,18 @@
         <result property="skuName" column="sku_name"/>
         <result property="stockLocked" column="stock_locked"/>
     </resultMap>
+    <update id="lockStore">
+        update wms_ware_sku set stock_ locked=stock_locked + #{count} where id=#{id}
+    </update>
+
+    <update id="unLockStore">
+        update wms_ware_sku set stock_ locked=stock_locked - #{count} where id=#{wareSkuId}
+    </update>
+
+    <select id="checkStore" resultMap="wareSkuMap">
+        select  * from wms_ware_sku where sku_id=#{skuId} and stock-stock_locked>#{count}
+    </select>
+
 
 
 </mapper>

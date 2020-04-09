@@ -14,7 +14,26 @@ spring:
     username: guest
     password: guest
 
+
 gmall:
   jwt:
     pubKeyPath: C:\\Users\\kaixuan\\Desktop\\gmall_cloud\\rsa\\rsa.pub # 公钥地址
     cookieName: GMALL_TOKEN
+
+  main:
+    pool:
+      corePoolSize: 8
+      maximumPoolSize: 100
+      keepAliveTime: 10
+      queueSize: 10000
+  other:
+    pool:
+      corePoolSize: 8
+      maximumPoolSize: 100
+      keepAliveTime: 10
+      queueSize: 10000
+feign:
+  client:
+    config:
+      default:
+        readTimeout: 60000
