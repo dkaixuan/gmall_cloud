@@ -19,6 +19,7 @@ import com.atguigu.gmall.ums.entity.MemberReceiveAddressEntity;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private GmallPmsClient gmallPmsClient;
     @Autowired
     private OrderItemDao orderItemDao;
-
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+    private static final String ORDER_DELAY_EXCHANGE="user.order.delay.exchange";
+    private static final String ORDER_DELAY_ROUTING_KEY="order.delay";
     @Override
     public PageVo queryPage(QueryCondition params) {
         IPage<OrderEntity> page = this.page(
@@ -80,6 +84,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             orderItemEntity.setSkuAttrsVals(JSON.toJSONString(item.getSaleAttrValues()));
             orderItemDao.insert(orderItemEntity);
         });
+
+        //发送延时消息
+        amqpTemplate.convertAndSend(ORDER_DELAY_EXCHANGE, ORDER_DELAY_ROUTING_KEY, orderSubmitVo.getOrderToken());
+
 
 
         return orderEntity;

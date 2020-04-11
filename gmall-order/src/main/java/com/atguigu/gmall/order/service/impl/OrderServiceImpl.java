@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 @Service
 public class OrderServiceImpl implements OrderService {
     private static final String KEY_PREFIX = "user:cart:";
+
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
@@ -210,6 +211,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             Resp<OrderEntity> saveResp = omsClient.saveOrder(orderSubmitVo);
         } catch (Exception e) {
+            //解锁库存
             amqpTemplate.convertAndSend(ORDER_EXCHANGE, "stock:unlock", orderToken);
             e.printStackTrace();
             throw new OrderException("服务器繁忙，下单失败，请稍后再试");

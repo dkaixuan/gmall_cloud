@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,15 @@ import java.util.stream.Collectors;
 public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> implements WareSkuService {
 
     private static final String KEY_PREFIX = "store:lock:";
-
+    private static final String ORDER_EXCHANGE="GMALL-ORDER-EXCHANGE";
     @Autowired
     private RedissonClient redissonClient;
     @Autowired
     private WareSkuDao wareSkuDao;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public PageVo queryPage(QueryCondition params) {
@@ -66,8 +69,10 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
 
 
         String orderToken = skuLockVos.get(0).getOrderToken();
-
         stringRedisTemplate.opsForValue().set(KEY_PREFIX + orderToken, JSON.toJSONString(skuLockVos));
+
+        //锁定成功，发送延时消息，定时解锁
+        amqpTemplate.convertAndSend(ORDER_EXCHANGE, "stock.ttl", orderToken);
         return null;
     }
 

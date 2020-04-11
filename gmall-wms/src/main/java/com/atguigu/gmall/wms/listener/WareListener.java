@@ -34,9 +34,6 @@ public class WareListener {
             exchange = @Exchange(value = "GMALL-ORDER-EXCHANGE",ignoreDeclarationExceptions = "true",type = ExchangeTypes.TOPIC),
             key = {"stock:unlock"}
     ))
-
-
-
     public void unLockListener(String orderToken) {
         String lockJson = stringRedisTemplate.opsForValue().get(ORDER_TOKEN_PREFIX + orderToken);
         List<SkuLockVo> lockVos = JSON.parseArray(lockJson, SkuLockVo.class);

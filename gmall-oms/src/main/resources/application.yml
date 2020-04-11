@@ -12,6 +12,11 @@ spring:
     password:
   redis:
     host: 114.55.36.227
+  rabbitmq:
+    username: guest
+    password: guest
+    virtual-host: /
+    host: 114.55.37.227
 mybatis-plus:
   mapper-locations: classpath:mapper/oms/**/*xml
 
